@@ -100,6 +100,7 @@ public class Main extends JPanel implements KeyListener{
 
 		//Goliath
 		goliath.setCurrentRoom(rooms.get(2));
+		goliath.setTarget(david);
 
 		//Stones
 		stones.get(0).setCurrentRoom(rooms.get(0));
@@ -108,11 +109,12 @@ public class Main extends JPanel implements KeyListener{
 		stones.get(3).setCurrentRoom(rooms.get(21));
 		stones.get(4).setCurrentRoom(rooms.get(22));
 
-		timer = new Timer(1000, new ActionListener() {
+		timer = new Timer(750, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				goliath.actionPerformed(e);
 				repaint();
+				checkCollision();
 			}
 		});
 
@@ -160,27 +162,7 @@ public class Main extends JPanel implements KeyListener{
 			}
 		}
 		
-		/* conditions if david's location is the same as goliath's location */
-		if (david.getCurrentRoom().equals(goliath.getCurrentRoom()) && goliath.getCurrentRoom().equals(david.getCurrentRoom())) {
-			timer.stop();
-			repaint();
-			if (david.isArmed()) {
-				//System.out.println("Congratulations David! You slew Goliath!"); 
-				win.play();
-				background.stop();
-				JOptionPane.showMessageDialog(this, "Congratulations David! You slew Goliath!");
-				win.stop();
-			} else {
-				//System.out.println("Oh no David! Goliath got you! Try again");
-				lose.play();
-				background.stop();
-				JOptionPane.showMessageDialog(this, "Oh no David! Goliath got you! Try again");
-				lose.stop();
-
-			}
-
-			reset();
-		}
+		checkCollision();
 
 		repaint();
 	}
@@ -207,6 +189,27 @@ public class Main extends JPanel implements KeyListener{
 		david.draw(g);
 		goliath.draw(g);
 
+	}
+
+	//check if David and Goliath are in the same room
+	private void checkCollision() {
+		if (david.getCurrentRoom().equals(goliath.getCurrentRoom()) && goliath.getCurrentRoom().equals(david.getCurrentRoom())) {
+			timer.stop();
+			repaint();
+			if (david.isArmed()) {
+				win.play();
+				background.stop();
+				JOptionPane.showMessageDialog(this, "Congratulations David! You slew Goliath!");
+				win.stop();
+			} else {
+				lose.play();
+				background.stop();
+				JOptionPane.showMessageDialog(this, "Oh no David! Goliath got you! Try again");
+				lose.stop();
+			}
+
+			reset();
+		}
 	}
 
 	//resetting the positions of the sprites
