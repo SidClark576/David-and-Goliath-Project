@@ -14,18 +14,18 @@ public class Main extends JPanel implements KeyListener{
 
 	private ArrayList<Room> rooms;
 	private ArrayList<Stone> stones;
-	private ArrayList<Drawable> sprites;
 	private David david;
 	private Goliath goliath;
 
 	private AudioPlayer background, pickupStone, win, lose;
+	private Timer timer;
 
 	public Main() {
 		//Instantiating AudioPlayer
-		background = new AudioPlayer("soundeffects\\background.wav");
-		pickupStone = new AudioPlayer("soundeffects\\Pick up stone.wav");
-		win = new AudioPlayer("soundeffects\\You won.wav");
-		lose = new AudioPlayer("soundeffects\\You lose.wav");
+		background = new AudioPlayer("soundeffects/background.wav");
+		pickupStone = new AudioPlayer("soundeffects/Pick up stone.wav");
+		win = new AudioPlayer("soundeffects/You won.wav");
+		lose = new AudioPlayer("soundeffects/You lose.wav");
 
 		background.play();
 		background.loop();
@@ -108,14 +108,7 @@ public class Main extends JPanel implements KeyListener{
 		stones.get(3).setCurrentRoom(rooms.get(21));
 		stones.get(4).setCurrentRoom(rooms.get(22));
 
-		//Applying polymorphism
-		sprites = new ArrayList<>();
-		sprites.addAll(rooms);
-		sprites.addAll(stones);
-		sprites.add(david);
-		sprites.add(goliath);
-
-		Timer timer = new Timer(1000, new ActionListener() {
+		timer = new Timer(1000, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				goliath.actionPerformed(e);
@@ -155,62 +148,21 @@ public class Main extends JPanel implements KeyListener{
 			//System.out.println("Key is Pressed E");
 			david.moveEast();
 			break;
-
-			//moving keys for Goliath
-			// case KeyEvent.VK_W:
-			// //System.out.println("Key is Pressed N");
-			// goliath.moveNorth();
-			// break;
-
-			// case KeyEvent.VK_S:
-			// //System.out.println("Key is Pressed S");
-			// goliath.moveSouth();
-			// break;
-
-			// case KeyEvent.VK_A:
-			// //System.out.println("Key is Pressed W");
-			// goliath.moveWest();
-			// break;
-
-			// case KeyEvent.VK_D:
-			// //System.out.println("Key is Pressed E");
-			// goliath.moveEast();
-			// break;
 		}
 
 		/* conditions if david is in the room that has the stones */
-		if (david.getCurrentRoom().equals(stones.get(0).getCurrentRoom())) {
-			pickupStone.stop();
-			david.pickupStone();
-			stones.get(0).currentRoom = null;
-			pickupStone.play();
-
-		} else if (david.getCurrentRoom().equals(stones.get(1).getCurrentRoom())) {
-			pickupStone.stop();
-			david.pickupStone();
-			stones.get(1).currentRoom = null;
-			pickupStone.play();
-
-		} else if (david.getCurrentRoom().equals(stones.get(2).getCurrentRoom())) {
-			pickupStone.stop();
-			david.pickupStone();
-			stones.get(2).currentRoom = null;
-			pickupStone.play();
-
-		} else if (david.getCurrentRoom().equals(stones.get(3).getCurrentRoom())) {
-			pickupStone.stop();
-			david.pickupStone();
-			stones.get(3).currentRoom = null;
-			pickupStone.play();
-		} else if (david.getCurrentRoom().equals(stones.get(4).getCurrentRoom())) {
-			pickupStone.stop();
-			david.pickupStone();
-			stones.get(4).currentRoom = null;
-			pickupStone.play();
+		for (int i = 0; i < stones.size(); i++) {
+			if (stones.get(i).getCurrentRoom() != null && david.getCurrentRoom().equals(stones.get(i).getCurrentRoom())) {
+				pickupStone.stop();
+				david.pickupStone();
+				stones.get(i).currentRoom = null;
+				pickupStone.play();
+			}
 		}
 		
 		/* conditions if david's location is the same as goliath's location */
 		if (david.getCurrentRoom().equals(goliath.getCurrentRoom()) && goliath.getCurrentRoom().equals(david.getCurrentRoom())) {
+			timer.stop();
 			repaint();
 			if (david.isArmed()) {
 				//System.out.println("Congratulations David! You slew Goliath!"); 
@@ -242,22 +194,18 @@ public class Main extends JPanel implements KeyListener{
 		g.setColor(new Color(209, 250, 201));
 		g.fillRect(0, 0, getWidth(), getHeight());
 
-		for (Drawable sprite : sprites) {
-			sprite.draw(g);
-		}
-		
 		//for loop for drawing the rooms
-		// for(Room room : rooms) {
-		// 	room.draw(g);
-		// }
+		for(Room room : rooms) {
+			room.draw(g);
+		}
 
-		// // loop for drawing stones
-		// for (Sprite stone: stones) {
-		// 	stone.draw(g);
-		// }
+		// loop for drawing stones
+		for (Sprite stone: stones) {
+			stone.draw(g);
+		}
 
-		// david.draw(g);
-		// goliath.draw(g);
+		david.draw(g);
+		goliath.draw(g);
 
 	}
 
@@ -275,8 +223,9 @@ public class Main extends JPanel implements KeyListener{
 		background.play();
 		background.loop();
 
-	}
+		timer.start();
 
+	}
 
 	public static void main(String[] args) {
 		var window = new JFrame("David and Goliath Game");
@@ -284,7 +233,6 @@ public class Main extends JPanel implements KeyListener{
 		window.setSize(400,400);
 		window.setContentPane(new Main());
 		window.setVisible(true);
-
 	}
 
 }

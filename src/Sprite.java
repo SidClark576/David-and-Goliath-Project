@@ -1,8 +1,7 @@
 import java.awt.Graphics;
-
 import javax.swing.ImageIcon;
 
-public abstract class Sprite implements Drawable{
+public abstract class Sprite {
     protected Room currentRoom;
     protected ImageIcon image;
 
@@ -44,27 +43,12 @@ public abstract class Sprite implements Drawable{
         }
     }
 
-    
-    //boolean where evaluating two objects if they are in the same room
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Sprite other) {
-            if (this.getCurrentRoom() == other.getCurrentRoom()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
     public void draw(Graphics g) {
-        int offsetX = (Room.roomSize - image.getIconWidth()) / 2;
-        int offsetY = (Room.roomSize - image.getIconHeight()) / 2;
+        int roomSize = 50;
+        int offsetX = (roomSize - image.getIconWidth()) / 2;
+        int offsetY = (roomSize - image.getIconHeight()) / 2;
         if (currentRoom != null) {
             image.paintIcon(null, g, currentRoom.getPosition().x + offsetX, currentRoom.getPosition().y + offsetY);
         }
     }
-
 }

@@ -2,13 +2,12 @@ import java.awt.Point;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class Room implements Drawable{
+public class Room {
     private Point pos;
     private Room exitEast;
     private Room exitWest;
     private Room exitNorth;
     private Room exitSouth;
-    public static final int roomSize = 50;
 
     public Point getPosition() {
         return pos;
@@ -99,6 +98,7 @@ public class Room implements Drawable{
     //Draws a 50x50 box and for exits
     public void draw (Graphics g) {
 
+        int roomSize = 50;
         final int side1 = 17;
         final int side2 = 33;
 
